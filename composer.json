@@ -1,5 +1,5 @@
 {
-  "name": "siarkowodor/h2s-controller-routing",
+  "name": "h2sf/controller-routing",
   "description": "description",
   "minimum-stability": "stable",
   "license": "proprietary",
@@ -12,11 +12,11 @@
     }
   ],
   "require": {
-    "siarkowodor/h2s-dependency-manager": "*",
-    "siarkowodor/h2s-url-service": "*",
-    "siarkowodor/h2s-block-layout": "*",
-    "siarkowodor/h2s-utils": "*",
-    "siarkowodor/serialization": "*"
+    "h2sf/dependency-manager": "*",
+    "h2sf/url-service": "*",
+    "h2sf/block-layout": "*",
+    "h2sf/utils": "*",
+    "h2sf/serialization": "*"
   },
   "autoload": {
     "psr-4": {
