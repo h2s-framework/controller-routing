@@ -1,0 +1,26 @@
+{
+  "name": "siarkowodor/h2s-controller-routing",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "version": "0.1.0",
+  "type": "library",
+  "authors": [
+    {
+      "name": "H2S",
+      "email": "mateusz@siarko.pl"
+    }
+  ],
+  "require": {
+    "siarkowodor/h2s-dependency-manager": "*",
+    "siarkowodor/h2s-url-service": "*",
+    "siarkowodor/h2s-block-layout": "*",
+    "siarkowodor/h2s-utils": "*",
+    "siarkowodor/serialization": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Siarko\\ActionRouting\\": "src/"
+    }
+  }
+}

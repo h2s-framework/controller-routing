@@ -1,0 +1,41 @@
+id: ActionRouting
+
+types:
+  # interface preferences
+  \Siarko\ActionRouting\BuiltinAction\Action404Interface: \Siarko\ActionRouting\BuiltinAction\Action404
+  \Siarko\ActionRouting\Routing\IRouter: \Siarko\ActionRouting\Routing\Router
+  \Siarko\ActionRouting\Routing\Matcher\MatcherInterface: \Siarko\ActionRouting\Routing\Matcher\ParametricMatcher
+  \Siarko\ActionRouting\Routing\Url\IRequestDataProvider: \Siarko\ActionRouting\Routing\Url\RequestDataProvider
+  # Virtual types
+  V\Siarko\ActionRouting\ScopeConfig: !new \Siarko\Paths\Scope\ScopeConfig
+  V\Siarko\ActionRouting\Cache\Routing: !new \Siarko\CacheFiles\Api\CacheSetInterface
+  V\Siarko\ActionRouting\Cache\Routing\DirectoryProvider: !new \Siarko\Paths\Provider\ProjectPathProvider
+arguments:
+  # Cache configuration
+  V\Siarko\ActionRouting\Cache\Routing\DirectoryProvider:
+    path: generated/cache/routing
+  V\Siarko\ActionRouting\Cache\Routing:
+    cacheDirectory: V\Siarko\ActionRouting\Cache\Routing\DirectoryProvider
+  # Add cache to the cache manager
+  \Siarko\CacheFiles\Manager:
+    caches:
+      routing: V\Siarko\ActionRouting\Cache\Routing
+
+  \Siarko\ActionRouting\ActionProvider\InputParams\InputParamValidator:
+    errorHandleAction: \Siarko\ActionRouting\ActionProvider\InputParams\ErrorHandler\DefaultInputErrorHandler
+  \Siarko\ActionRouting\ActionManager:
+    actionNoResult: \Siarko\ActionRouting\ActionResult\ActionNoResult
+    action404: \Siarko\ActionRouting\BuiltinAction\Action404
+  \Siarko\ActionRouting\ActionProvider\Provider:
+    routePathBuilder: \Siarko\ActionRouting\ActionProvider\ControllerFiles\DefaultRouteBuilder
+    pathProviderPool: \Siarko\Paths\Provider\Pool\ScopedPathProviderPool
+    configCache: V\Siarko\ActionRouting\Cache\Routing
+  # Scope configuration
+  V\Siarko\ActionRouting\ScopeConfig:
+    capitalize: true
+  \Siarko\Paths\Provider\Pool\ScopedPathProviderPool:
+    typeScopeConfig:
+      action: V\Siarko\ActionRouting\ScopeConfig
+  \Siarko\Modules\Paths\ModulePathsProvider:
+    pathTypes:
+      action: Action
