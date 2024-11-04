@@ -6,7 +6,7 @@ use Siarko\ActionRouting\Routing\Method;
 use Siarko\UrlService\UrlProvider;
 use Siarko\Utils\ArrayManager;
 
-class RequestDataProvider implements IRequestDataProvider
+class RequestDataProvider implements RequestDataProviderInterface
 {
 
     public const GET_URL_PARAM = '_URL';

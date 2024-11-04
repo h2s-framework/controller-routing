@@ -2,6 +2,8 @@
 
 namespace Siarko\ActionRouting\ActionResult;
 
+use Siarko\Paths\Exception\RootPathNotSet;
+use Siarko\UrlService\Processor\UrlProcessorManager;
 use Siarko\UrlService\UrlProvider;
 
 class ActionRedirectResult extends AbstractActionResult
@@ -16,8 +18,13 @@ class ActionRedirectResult extends AbstractActionResult
      */
     private bool $isAbsolute = false;
 
+    /**
+     * @param UrlProvider $baseUrlProvider
+     * @param UrlProcessorManager $urlProcessorManager
+     */
     public function __construct(
-        private readonly UrlProvider $baseUrlProvider
+        private readonly UrlProvider $baseUrlProvider,
+        private readonly UrlProcessorManager $urlProcessorManager
     )
     {
     }
@@ -46,11 +53,7 @@ class ActionRedirectResult extends AbstractActionResult
      */
     public function resolve(): void
     {
-        if($this->isAbsolute()){
-            header("Location: ".$this->getRedirectUrl());
-        }else{
-            header('Location: ' . $this->baseUrlProvider->getBaseUrl() . '/' . ltrim($this->getRedirectUrl(), '/'));
-        }
+        header("Location: ".$this->resolveUrl());
     }
 
     /**
@@ -67,5 +70,20 @@ class ActionRedirectResult extends AbstractActionResult
     public function setAbsolute(bool $isAbsolute): void
     {
         $this->isAbsolute = $isAbsolute;
+    }
+
+    /**
+     * @return string
+     * @throws RootPathNotSet
+     */
+    protected function resolveUrl(): string
+    {
+        if($this->isAbsolute()){
+            return $this->getRedirectUrl();
+        }
+        return $this->urlProcessorManager->process(
+            $this->getRedirectUrl(),
+            $this->baseUrlProvider->getCurrentUrl()
+        );
     }
 }

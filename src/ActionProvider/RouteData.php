@@ -20,7 +20,7 @@ class RouteData
         #[Serializable] protected array $routes,
         #[Serializable] protected string $className,
         #[Serializable] protected string $methodName,
-        #[Serializable] protected array $requiredParams,
+        #[Serializable] protected array $requiredParams = [],
         #[Serializable] protected array $metadata = []
     )
     {

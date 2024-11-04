@@ -4,7 +4,7 @@ namespace Siarko\ActionRouting\Routing\Url;
 
 use Siarko\ActionRouting\Routing\Method;
 
-interface IRequestDataProvider
+interface RequestDataProviderInterface
 {
 
     public function getRequestMethod(): Method;

@@ -2,56 +2,38 @@
 
 namespace Siarko\ActionRouting;
 
-use MJS\TopSort\CircularDependencyException;
-use MJS\TopSort\ElementNotFoundException;
 use Siarko\ActionRouting\ActionProvider\InputParams\InputParamValidator;
-use Siarko\ActionRouting\ActionProvider\Provider;
 use Siarko\ActionRouting\ActionProvider\RouteData;
 use Siarko\ActionRouting\ActionResult\AbstractActionResult;
-use Siarko\ActionRouting\Routing\IRouter;
-use Siarko\ActionRouting\Routing\Matcher\UrlMatchResult;
-use Siarko\DependencyManager\DependencyManager;
+use Siarko\ActionRouting\Api\Routing\RouterInterface;
+use Siarko\Api\Factory\ObjectCreatorInterface;
 
 class ActionManager
 {
 
     /**
-     * @param IRouter $router
-     * @param DependencyManager $dependencyManager
+     * @param RouterInterface $router
      * @param AbstractActionResult $actionNoResult
      * @param InputParamValidator $actionInputParamValidator
-     * @param Provider $actionProvider
+     * @param ObjectCreatorInterface $objectCreator
      */
     public function __construct(
-        private readonly IRouter $router,
-        private readonly DependencyManager $dependencyManager,
+        private readonly RouterInterface      $router,
         private readonly AbstractActionResult $actionNoResult,
         private readonly InputParamValidator $actionInputParamValidator,
-        protected readonly Provider $actionProvider
+        private readonly ObjectCreatorInterface $objectCreator
     )
     {
-        $this->registerRoutes();
     }
 
-
-    /**
-     * Register routes in router
-     */
-    protected function registerRoutes()
-    {
-        foreach ($this->actionProvider->getRoutes() as $routeData) {
-            $this->router->registerRoutes($routeData);
-        }
-    }
 
     /**
      * Actual request resolver
      */
     public function resolve()
     {
-        /** @var UrlMatchResult $matchResult */
-        $matchResult = $this->router->match();
-        $actionResult = $this->executeAction($matchResult->getRouteData());
+        $routeData = $this->getRouteData();
+        $actionResult = $this->executeAction($routeData);
         if ($actionResult === null) {
             $actionResult = $this->actionNoResult;
         }
@@ -59,21 +41,27 @@ class ActionManager
     }
 
     /**
-     * @param RouteData $data
-     * @return AbstractActionResult|null
-     * @throws CircularDependencyException
-     * @throws ElementNotFoundException
-     * @throws \ReflectionException
+     * @return RouteData
      */
-    protected function executeAction(RouteData $data): ?AbstractActionResult
+    protected function getRouteData(): RouteData
+    {
+        $matchResult = $this->router->match();
+        return $matchResult->getRouteData();
+    }
+
+    /**
+     * @param RouteData $routeData
+     * @return AbstractActionResult|null
+     */
+    protected function executeAction(RouteData $routeData): ?AbstractActionResult
     {
         /** @var IAction $actionInstance */
-        $actionInstance = $this->dependencyManager->get($data->getClassName());
-        $validationResult = $this->actionInputParamValidator->validate($data, $actionInstance);
+        $actionInstance = $this->objectCreator->createObject($routeData->getClassName());
+        $validationResult = $this->actionInputParamValidator->validate($routeData, $actionInstance);
         if($validationResult !== null){
             return $validationResult;
         }
-        $methodName = $data->getMethodName();
+        $methodName = $routeData->getMethodName();
         return $actionInstance->$methodName();
     }
 
