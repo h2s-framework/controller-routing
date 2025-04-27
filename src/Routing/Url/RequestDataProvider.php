@@ -53,7 +53,11 @@ class RequestDataProvider implements RequestDataProviderInterface
         if($absolute){
             return $referer;
         }else{
-            return substr($referer, strlen($this->getBaseUrl()));
+            $url = substr($referer, strlen($this->getBaseUrl()));
+            if(empty($url)){
+                return '/';
+            }
+            return $url;
         }
     }
 
