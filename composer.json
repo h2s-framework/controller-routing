@@ -3,7 +3,7 @@
   "description": "description",
   "minimum-stability": "stable",
   "license": "proprietary",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "library",
   "authors": [
     {
@@ -12,11 +12,13 @@
     }
   ],
   "require": {
-    "h2sf/dependency-manager": "*",
-    "h2sf/url-service": "*",
-    "h2sf/block-layout": "*",
-    "h2sf/utils": "*",
-    "h2sf/serialization": "*"
+    "h2sf/api": "^0.1.1",
+    "h2sf/config-files": "^0.2",
+    "h2sf/file-abstraction": "^0.2",
+    "h2sf/path-manager": "^0.1",
+    "h2sf/url-service": "^0.1.2",
+    "h2sf/utils": "^0.1.3",
+    "h2sf/serialization": "^0.1"
   },
   "autoload": {
     "psr-4": {
